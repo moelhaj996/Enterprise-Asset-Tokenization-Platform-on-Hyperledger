@@ -96,7 +96,7 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: test_password
           JWT_SECRET: test-secret-key-for-ci-cd-pipeline-testing-only
           BESU_RPC_URL: http://localhost:8545
-          DEPLOYER_PRIVATE_KEY: 0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63
+          DEPLOYER_PRIVATE_KEY: "0x8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63"
         run: |
           cd backend
           mvn test
