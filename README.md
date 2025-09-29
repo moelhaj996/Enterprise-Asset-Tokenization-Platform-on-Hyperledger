@@ -75,7 +75,7 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/moelhaj996/Enterprise-Asset-Tokenization-Platform-on-Hyperledger
 cd Enterprise-Asset-Tokenization-Platform-on-Hyperledger
 ```
 
@@ -486,7 +486,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Authors
 
 - **Enterprise Blockchain Team**
-- Contact: your.email@example.com
+- Contact: moh.elnaim996@gmail.com
 
 ## 🙏 Acknowledgments
 
@@ -518,4 +518,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ for enterprise blockchain adoption**
+**Built with Mohamed ❤️ for enterprise blockchain adoption**
