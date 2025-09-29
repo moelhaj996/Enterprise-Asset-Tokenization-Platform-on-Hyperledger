@@ -1,0 +1,228 @@
+version: '3.8'
+
+services:
+  # Besu Validator Node 1
+  besu-node-1:
+    image: hyperledger/besu:latest
+    container_name: besu-node-1
+    hostname: besu-node-1
+    volumes:
+      - ./config/besu:/config
+      - besu-data-1:/opt/besu/data
+    environment:
+      - BESU_LOGGING=INFO
+    command:
+      - --genesis-file=/config/genesis.json
+      - --network-id=${BESU_NETWORK_ID:-1337}
+      - --rpc-http-enabled
+      - --rpc-http-host=0.0.0.0
+      - --rpc-http-port=8545
+      - --rpc-http-cors-origins=*
+      - --rpc-http-api=ETH,NET,WEB3,ADMIN,DEBUG,MINER,IBFT,TXPOOL
+      - --rpc-ws-enabled
+      - --rpc-ws-host=0.0.0.0
+      - --rpc-ws-port=8546
+      - --rpc-ws-api=ETH,NET,WEB3
+      - --host-allowlist=*
+      - --p2p-enabled=true
+      - --p2p-host=0.0.0.0
+      - --p2p-port=30303
+      - --min-gas-price=0
+      - --miner-enabled
+      - --miner-coinbase=0x0000000000000000000000000000000000000001
+      - --data-path=/opt/besu/data
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+      - "30303:30303"
+    networks:
+      - besu-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:8545"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Besu Validator Node 2
+  besu-node-2:
+    image: hyperledger/besu:latest
+    container_name: besu-node-2
+    hostname: besu-node-2
+    volumes:
+      - ./config/besu:/config
+      - besu-data-2:/opt/besu/data
+    environment:
+      - BESU_LOGGING=INFO
+    command:
+      - --genesis-file=/config/genesis.json
+      - --network-id=${BESU_NETWORK_ID:-1337}
+      - --rpc-http-enabled
+      - --rpc-http-host=0.0.0.0
+      - --rpc-http-port=8545
+      - --rpc-http-cors-origins=*
+      - --rpc-http-api=ETH,NET,WEB3,ADMIN,DEBUG,MINER,IBFT,TXPOOL
+      - --host-allowlist=*
+      - --p2p-enabled=true
+      - --p2p-host=0.0.0.0
+      - --p2p-port=30303
+      - --bootnodes=enode://$(docker exec besu-node-1 besu public-key export-address)@besu-node-1:30303
+      - --min-gas-price=0
+      - --miner-enabled
+      - --miner-coinbase=0x0000000000000000000000000000000000000002
+      - --data-path=/opt/besu/data
+    ports:
+      - "8547:8545"
+      - "30304:30303"
+    networks:
+      - besu-network
+    depends_on:
+      besu-node-1:
+        condition: service_healthy
+
+  # Besu Validator Node 3
+  besu-node-3:
+    image: hyperledger/besu:latest
+    container_name: besu-node-3
+    hostname: besu-node-3
+    volumes:
+      - ./config/besu:/config
+      - besu-data-3:/opt/besu/data
+    environment:
+      - BESU_LOGGING=INFO
+    command:
+      - --genesis-file=/config/genesis.json
+      - --network-id=${BESU_NETWORK_ID:-1337}
+      - --rpc-http-enabled
+      - --rpc-http-host=0.0.0.0
+      - --rpc-http-port=8545
+      - --rpc-http-cors-origins=*
+      - --rpc-http-api=ETH,NET,WEB3,ADMIN,DEBUG,MINER,IBFT,TXPOOL
+      - --host-allowlist=*
+      - --p2p-enabled=true
+      - --p2p-host=0.0.0.0
+      - --p2p-port=30303
+      - --bootnodes=enode://$(docker exec besu-node-1 besu public-key export-address)@besu-node-1:30303
+      - --min-gas-price=0
+      - --miner-enabled
+      - --miner-coinbase=0x0000000000000000000000000000000000000003
+      - --data-path=/opt/besu/data
+    ports:
+      - "8548:8545"
+      - "30305:30303"
+    networks:
+      - besu-network
+    depends_on:
+      besu-node-1:
+        condition: service_healthy
+
+  # Besu Validator Node 4
+  besu-node-4:
+    image: hyperledger/besu:latest
+    container_name: besu-node-4
+    hostname: besu-node-4
+    volumes:
+      - ./config/besu:/config
+      - besu-data-4:/opt/besu/data
+    environment:
+      - BESU_LOGGING=INFO
+    command:
+      - --genesis-file=/config/genesis.json
+      - --network-id=${BESU_NETWORK_ID:-1337}
+      - --rpc-http-enabled
+      - --rpc-http-host=0.0.0.0
+      - --rpc-http-port=8545
+      - --rpc-http-cors-origins=*
+      - --rpc-http-api=ETH,NET,WEB3,ADMIN,DEBUG,MINER,IBFT,TXPOOL
+      - --host-allowlist=*
+      - --p2p-enabled=true
+      - --p2p-host=0.0.0.0
+      - --p2p-port=30303
+      - --bootnodes=enode://$(docker exec besu-node-1 besu public-key export-address)@besu-node-1:30303
+      - --min-gas-price=0
+      - --miner-enabled
+      - --miner-coinbase=0x0000000000000000000000000000000000000004
+      - --data-path=/opt/besu/data
+    ports:
+      - "8549:8545"
+      - "30306:30303"
+    networks:
+      - besu-network
+    depends_on:
+      besu-node-1:
+        condition: service_healthy
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    hostname: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tokenization}
+      POSTGRES_USER: ${DB_USER:-tokenization_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_me_in_production}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backend/src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - besu-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-tokenization_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Java Spring Boot Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    hostname: backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-tokenization}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-tokenization_user}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-change_me_in_production}
+      BESU_RPC_URL: http://besu-node-1:8545
+      BESU_WS_URL: ws://besu-node-1:8546
+      JWT_SECRET: ${JWT_SECRET}
+      ASSET_TOKEN_CONTRACT_ADDRESS: ${ASSET_TOKEN_CONTRACT_ADDRESS}
+      DEPLOYER_PRIVATE_KEY: ${DEPLOYER_PRIVATE_KEY}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      LOGGING_LEVEL_COM_ENTERPRISE_TOKENIZATION: ${LOGGING_LEVEL_COM_ENTERPRISE_TOKENIZATION:-DEBUG}
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    networks:
+      - besu-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      besu-node-1:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  besu-data-1:
+    driver: local
+  besu-data-2:
+    driver: local
+  besu-data-3:
+    driver: local
+  besu-data-4:
+    driver: local
+  postgres-data:
+    driver: local
+
+networks:
+  besu-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
