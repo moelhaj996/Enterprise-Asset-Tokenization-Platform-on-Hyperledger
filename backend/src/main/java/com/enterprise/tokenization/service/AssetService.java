@@ -310,14 +310,14 @@ public class AssetService {
         log.info("Retrieving balance for asset: {} and address: {}", assetId, address);
 
         try {
-            // Try to get balance from blockchain
-            BigInteger balance = blockchainService.getBalance(assetId, address);
+            // Try to get balance from blockchain (total balance for address)
+            BigInteger balance = blockchainService.getBalance(address);
             log.info("Balance from blockchain: {}", balance);
             return balance;
         } catch (Exception e) {
             log.warn("Failed to get balance from blockchain, falling back to database", e);
 
-            // Fall back to database
+            // Fall back to database for asset-specific balance
             AssetHolder holder = assetHolderRepository.findByAssetIdAndHolderAddress(assetId, address)
                     .orElse(null);
 
