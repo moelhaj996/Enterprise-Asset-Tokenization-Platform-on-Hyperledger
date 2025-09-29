@@ -8,6 +8,7 @@
 - Fixed YAML parsing error by quoting private key environment variable in CI/CD pipeline
 - Fixed dependency caching issue by generating `package-lock.json` for contracts
 - Changed from `npm install` to `npm ci` in CI/CD for deterministic builds
+- Added missing version (10.10.0) for `flyway-database-postgresql` dependency in backend/pom.xml
 
 ### Added
 - Generated `package-lock.json` for reproducible dependency installation
