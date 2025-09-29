@@ -48,7 +48,7 @@ jobs:
           npx hardhat coverage
 
       - name: Upload coverage to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: contract-coverage
           path: contracts/coverage/
@@ -107,7 +107,7 @@ jobs:
           mvn jacoco:report
 
       - name: Upload coverage to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend-coverage
           path: backend/target/site/jacoco/
@@ -159,7 +159,7 @@ jobs:
           docker save tokenization-backend:${{ github.sha }} > backend-image.tar
 
       - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend-docker-image
           path: backend-image.tar
@@ -176,7 +176,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download Docker image
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: backend-docker-image
 
@@ -209,13 +209,13 @@ jobs:
 
     steps:
       - name: Download contract coverage
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: contract-coverage
         continue-on-error: true
 
       - name: Download backend coverage
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: backend-coverage
         continue-on-error: true
