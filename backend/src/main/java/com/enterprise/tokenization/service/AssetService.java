@@ -1,5 +1,6 @@
 package com.enterprise.tokenization.service;
 
+import com.enterprise.tokenization.blockchain.BlockchainService;
 import com.enterprise.tokenization.dto.*;
 import com.enterprise.tokenization.model.*;
 import com.enterprise.tokenization.repository.AssetHolderRepository;
