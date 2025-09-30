@@ -6,5 +6,6 @@ package com.enterprise.tokenization.model;
 public enum TransactionStatus {
     PENDING,
     SUCCESS,
-    FAILED
+    FAILED,
+    CONFIRMED
 }
